@@ -1,0 +1,76 @@
+# ============================================================
+# Plant Disease Detection Using CNN - .gitignore
+# ============================================================
+
+# Python virtual environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+*.env
+secrets.py
+config_secret.py
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Pytest / test cache
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# ============================================================
+# Generated / runtime files (do NOT commit these)
+# ============================================================
+
+# User-uploaded images (generated at runtime)
+static/uploads/
+
+# Generated Grad-CAM heatmaps (runtime output)
+static/heatmaps/
+
+# Large sample images (too large to commit, not needed for code)
+# static/samples/ -- kept small samples are fine; exclude large ones individually if needed
+
+# Word document artifacts (not source code)
+docx_text.txt
+project.docx
+
+# SQLite database (runtime data — regenerated on first run)
+plant_disease.db
+
+# Large dataset directories (if any exist)
+datasets/
+data/
+*.h5
+*.hdf5
+
+# NOTE: models/model.safetensors (~8.8 MB) IS included intentionally.
+# It is under GitHub's 100 MB limit and is required to run the app.
+# If this grows beyond 100 MB in future, use Git LFS or host externally.

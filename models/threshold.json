@@ -1,0 +1,152 @@
+{
+  "status": "selected",
+  "threshold": 0.5,
+  "note": "threshold 0.50 has the highest pass rate (125/302 (41.4%)) among those with >=70% of 'ok' answers correct.",
+  "best_available": {
+    "threshold": 0.95,
+    "precision": 0.9285714285714286,
+    "pass_rate": 0.08609271523178808,
+    "ok_n": 28,
+    "n": 302,
+    "coverage": 0.09271523178807947
+  },
+  "chosen": {
+    "threshold": 0.5,
+    "precision": 0.7142857142857143,
+    "pass_rate": 0.4139072847682119,
+    "ok_n": 175,
+    "n": 302,
+    "coverage": 0.5794701986754967
+  },
+  "sweep": [
+    {
+      "threshold": 0.3,
+      "n": 302,
+      "passes": 152,
+      "pass_rate": 0.5033112582781457,
+      "ok_n": 244,
+      "coverage": 0.8079470198675497,
+      "precision": 0.6229508196721312
+    },
+    {
+      "threshold": 0.35,
+      "n": 302,
+      "passes": 147,
+      "pass_rate": 0.4867549668874172,
+      "ok_n": 228,
+      "coverage": 0.7549668874172185,
+      "precision": 0.6447368421052632
+    },
+    {
+      "threshold": 0.4,
+      "n": 302,
+      "passes": 142,
+      "pass_rate": 0.47019867549668876,
+      "ok_n": 207,
+      "coverage": 0.6854304635761589,
+      "precision": 0.6859903381642513
+    },
+    {
+      "threshold": 0.45,
+      "n": 302,
+      "passes": 138,
+      "pass_rate": 0.45695364238410596,
+      "ok_n": 199,
+      "coverage": 0.6589403973509934,
+      "precision": 0.6934673366834171
+    },
+    {
+      "threshold": 0.5,
+      "n": 302,
+      "passes": 125,
+      "pass_rate": 0.4139072847682119,
+      "ok_n": 175,
+      "coverage": 0.5794701986754967,
+      "precision": 0.7142857142857143
+    },
+    {
+      "threshold": 0.55,
+      "n": 302,
+      "passes": 122,
+      "pass_rate": 0.40397350993377484,
+      "ok_n": 158,
+      "coverage": 0.5231788079470199,
+      "precision": 0.7721518987341772
+    },
+    {
+      "threshold": 0.6,
+      "n": 302,
+      "passes": 115,
+      "pass_rate": 0.38079470198675497,
+      "ok_n": 145,
+      "coverage": 0.48013245033112584,
+      "precision": 0.7931034482758621
+    },
+    {
+      "threshold": 0.65,
+      "n": 302,
+      "passes": 99,
+      "pass_rate": 0.32781456953642385,
+      "ok_n": 122,
+      "coverage": 0.40397350993377484,
+      "precision": 0.8114754098360656
+    },
+    {
+      "threshold": 0.7,
+      "n": 302,
+      "passes": 88,
+      "pass_rate": 0.2913907284768212,
+      "ok_n": 105,
+      "coverage": 0.347682119205298,
+      "precision": 0.8380952380952381
+    },
+    {
+      "threshold": 0.75,
+      "n": 302,
+      "passes": 74,
+      "pass_rate": 0.24503311258278146,
+      "ok_n": 88,
+      "coverage": 0.2913907284768212,
+      "precision": 0.8409090909090909
+    },
+    {
+      "threshold": 0.8,
+      "n": 302,
+      "passes": 65,
+      "pass_rate": 0.2152317880794702,
+      "ok_n": 76,
+      "coverage": 0.25165562913907286,
+      "precision": 0.8552631578947368
+    },
+    {
+      "threshold": 0.85,
+      "n": 302,
+      "passes": 53,
+      "pass_rate": 0.17549668874172186,
+      "ok_n": 62,
+      "coverage": 0.2052980132450331,
+      "precision": 0.8548387096774194
+    },
+    {
+      "threshold": 0.9,
+      "n": 302,
+      "passes": 36,
+      "pass_rate": 0.11920529801324503,
+      "ok_n": 39,
+      "coverage": 0.1291390728476821,
+      "precision": 0.9230769230769231
+    },
+    {
+      "threshold": 0.95,
+      "n": 302,
+      "passes": 26,
+      "pass_rate": 0.08609271523178808,
+      "ok_n": 28,
+      "coverage": 0.09271523178807947,
+      "precision": 0.9285714285714286
+    }
+  ],
+  "min_precision": 0.7,
+  "strategy": "B",
+  "temperature": 0.8845188130635788
+}

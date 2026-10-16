@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Plant Disease Detection Using Convolutional Neural Network (CNN) - Interactive Agri-Tech deep learning platform for crop disease diagnosis.">
+  <title>{% block title %}AgriScan AI - Plant Disease Detection Using CNN{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍃</text></svg>">
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-navbar">
+    <div class="nav-brand">
+      <a href="{{ url_for('index') }}" style="display: flex; align-items: center; gap: 0.75rem; color: #fff;">
+        <div class="brand-icon">🍃</div>
+        <span>AgriScan <span style="color: var(--emerald-400);">AI</span></span>
+      </a>
+      <span class="brand-tag">CNN v2.4</span>
+    </div>
+
+    <ul class="nav-links">
+      <li class="nav-item"><a href="{{ url_for('index') }}" id="nav-home">Home</a></li>
+      <li class="nav-item"><a href="{{ url_for('diagnose') }}" id="nav-diagnose">Diagnostic Studio</a></li>
+      <li class="nav-item"><a href="{{ url_for('history') }}" id="nav-history">Scan History</a></li>
+      <li class="nav-item"><a href="{{ url_for('metrics') }}" id="nav-metrics">Model Metrics</a></li>
+      <li class="nav-item"><a href="{{ url_for('guide') }}" id="nav-guide">Field Guide</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="{{ url_for('diagnose') }}" class="btn-cta" id="nav-cta-btn">
+        <span>⚡</span> Start Detection
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Main Content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.8rem; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 0.8rem; font-weight: 700; color: #fff; font-size: 1.1rem;">
+        <span style="color: var(--emerald-400);">🍃 AgriScan AI</span> • Plant Disease Detection Using CNN
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 680px;">
+        MCA Mini Project Synopsis | <strong>Candidate: Ayesha S. Inamdar</strong> | Master of Computer Applications (MCA)<br>
+        Department of Computer Science • Trained on PlantVillage Dataset Architecture
+      </p>
+      <div style="display: flex; gap: 1.5rem; font-size: 0.8rem; color: var(--text-dim); margin-top: 0.4rem;">
+        <span>Accuracy: <strong>96.4%</strong></span>
+        <span>Classes: <strong>16 Categories</strong></span>
+        <span>Engine: <strong>Flask + CNN Feature Tensors</strong></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

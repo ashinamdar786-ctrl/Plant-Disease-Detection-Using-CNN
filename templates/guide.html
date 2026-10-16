@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Field Guide & Disease Encyclopedia - AgriScan AI{% endblock %}
+
+{% block content %}
+<div class="section-wrapper" style="padding-top: 2rem;">
+
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div class="section-tag">Agronomy Knowledge Base</div>
+      <h1 style="font-size: 2.2rem;">Botanical Disease Field Guide</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Complete diagnostic encyclopedia of all plant foliar conditions, symptoms, and organic & chemical treatment protocols.
+      </p>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <a href="{{ url_for('guide', crop='all') }}" class="btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; {% if selected_crop == 'all' %}background: rgba(16,185,129,0.2); border-color: var(--emerald-400); color: #fff;{% endif %}">
+        All Crops
+      </a>
+      <a href="{{ url_for('guide', crop='Tomato') }}" class="btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; {% if selected_crop == 'Tomato' %}background: rgba(16,185,129,0.2); border-color: var(--emerald-400); color: #fff;{% endif %}">
+        Tomato
+      </a>
+      <a href="{{ url_for('guide', crop='Potato') }}" class="btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; {% if selected_crop == 'Potato' %}background: rgba(16,185,129,0.2); border-color: var(--emerald-400); color: #fff;{% endif %}">
+        Potato
+      </a>
+      <a href="{{ url_for('guide', crop='Bell Pepper') }}" class="btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; {% if selected_crop == 'Bell Pepper' %}background: rgba(16,185,129,0.2); border-color: var(--emerald-400); color: #fff;{% endif %}">
+        Bell Pepper
+      </a>
+      <a href="{{ url_for('guide', crop='Apple') }}" class="btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; {% if selected_crop == 'Apple' %}background: rgba(16,185,129,0.2); border-color: var(--emerald-400); color: #fff;{% endif %}">
+        Apple
+      </a>
+      <a href="{{ url_for('guide', crop='Corn (Maize)') }}" class="btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; {% if selected_crop == 'Corn (Maize)' %}background: rgba(16,185,129,0.2); border-color: var(--emerald-400); color: #fff;{% endif %}">
+        Corn
+      </a>
+      <a href="{{ url_for('guide', crop='Grape') }}" class="btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; {% if selected_crop == 'Grape' %}background: rgba(16,185,129,0.2); border-color: var(--emerald-400); color: #fff;{% endif %}">
+        Grape
+      </a>
+    </div>
+  </div>
+
+  <!-- Cards Grid -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.8rem;">
+    {% for class_key, d in diseases.items() %}
+    <div class="glass-panel" style="padding: 1.8rem; display: flex; flex-direction: column;">
+      
+      <!-- Card Header -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+        <div>
+          <span style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--emerald-400); text-transform: uppercase;">
+            {{ d.crop }} • {{ d.type }}
+          </span>
+          <h3 style="font-size: 1.35rem; color: #fff; margin-top: 2px;">
+            {{ d.disease }}
+          </h3>
+          <div style="font-style: italic; color: var(--text-dim); font-size: 0.82rem;">
+            {{ d.scientific_name }}
+          </div>
+        </div>
+
+        {% if d.is_healthy %}
+        <span class="status-badge status-healthy" style="font-size: 0.75rem;">Healthy</span>
+        {% elif d.severity == 'Critical' %}
+        <span class="status-badge status-critical" style="font-size: 0.75rem;">Critical</span>
+        {% else %}
+        <span class="status-badge status-moderate" style="font-size: 0.75rem;">Moderate</span>
+        {% endif %}
+      </div>
+
+      <!-- Cause -->
+      <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.2rem;">
+        {{ d.cause }}
+      </p>
+
+      <!-- Symptoms bullets -->
+      <div style="margin-bottom: 1.2rem;">
+        <div style="font-size: 0.8rem; font-weight: 700; color: #fff; text-transform: uppercase; margin-bottom: 0.4rem;">
+          Key Visible Symptoms:
+        </div>
+        <ul style="list-style: disc; padding-left: 1.2rem; font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.25rem;">
+          {% for sym in d.symptoms %}
+          <li>{{ sym }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Action items -->
+      <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06);">
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--emerald-400); margin-bottom: 0.3rem;">
+          Organic Remedy:
+        </div>
+        <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.6rem;">
+          {{ d.organic_treatment[0] }}
+        </div>
+
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.3rem;">
+          Chemical Protection:
+        </div>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">
+          {{ d.chemical_treatment[0] }}
+        </div>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

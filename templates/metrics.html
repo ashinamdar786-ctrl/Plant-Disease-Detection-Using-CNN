@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Model Evaluation & Performance Dashboard - AgriScan AI{% endblock %}
+
+{% block content %}
+<div class="section-wrapper" style="padding-top: 2rem;">
+
+  <!-- Header -->
+  <div style="margin-bottom: 2.5rem;">
+    <div class="section-tag">Deep Learning Evaluation</div>
+    <h1 style="font-size: 2.3rem;">CNN Model Performance Dashboard</h1>
+    <p style="color: var(--text-muted); font-size: 0.98rem; max-width: 780px;">
+      Comprehensive testing benchmarks, multi-class confusion matrix, precision/recall metrics, and convolutional neural architecture details as specified in the MCA Project Synopsis.
+    </p>
+  </div>
+
+  <!-- Key Performance Indicators (KPIs) -->
+  <div class="metrics-overview-grid">
+    <div class="glass-panel metric-kpi-card">
+      <div class="metric-kpi-val">{{ metrics.overall_accuracy }}%</div>
+      <div class="metric-kpi-label">Overall Test Accuracy</div>
+    </div>
+    <div class="glass-panel metric-kpi-card">
+      <div class="metric-kpi-val">{{ metrics.macro_precision }}%</div>
+      <div class="metric-kpi-label">Macro Precision</div>
+    </div>
+    <div class="glass-panel metric-kpi-card">
+      <div class="metric-kpi-val">{{ metrics.macro_recall }}%</div>
+      <div class="metric-kpi-label">Macro Recall</div>
+    </div>
+    <div class="glass-panel metric-kpi-card">
+      <div class="metric-kpi-val">{{ metrics.macro_f1 }}%</div>
+      <div class="metric-kpi-label">Macro F1-Score</div>
+    </div>
+  </div>
+
+  <!-- Training & Validation Curves Visualization -->
+  <div class="glass-panel" style="padding: 2rem; margin-bottom: 2.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.8rem;">
+      <div>
+        <h3 style="font-size: 1.3rem;">Epoch Learning Convergence Curves (25 Epochs)</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Monitored training accuracy & categorical cross-entropy loss trajectories.</p>
+      </div>
+      <div style="display: flex; gap: 1.2rem; font-size: 0.82rem; font-family: var(--font-mono);">
+        <span style="color: var(--emerald-400);">● Train Acc (99.1%)</span>
+        <span style="color: var(--accent-cyan);">● Val Acc (96.8%)</span>
+        <span style="color: var(--accent-rose);">● Loss (0.09)</span>
+      </div>
+    </div>
+
+    <!-- Interactive SVG Chart -->
+    <div style="width: 100%; height: 260px; position: relative;">
+      <svg viewBox="0 0 800 240" style="width: 100%; height: 100%; overflow: visible;">
+        <!-- Grid lines -->
+        <line x1="40" y1="20" x2="780" y2="20" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+        <line x1="40" y1="80" x2="780" y2="80" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+        <line x1="40" y1="140" x2="780" y2="140" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+        <line x1="40" y1="200" x2="780" y2="200" stroke="rgba(255,255,255,0.15)"/>
+
+        <!-- Y Axis labels -->
+        <text x="10" y="24" fill="#64748b" font-size="10" font-family="monospace">100%</text>
+        <text x="10" y="84" fill="#64748b" font-size="10" font-family="monospace">85%</text>
+        <text x="10" y="144" fill="#64748b" font-size="10" font-family="monospace">70%</text>
+        <text x="10" y="204" fill="#64748b" font-size="10" font-family="monospace">Loss</text>
+
+        <!-- Train Accuracy Line (Emerald) -->
+        <polyline
+          fill="none"
+          stroke="var(--emerald-400)"
+          stroke-width="3"
+          points="
+            {% for ep in metrics.training_curves.epochs %}
+              {{ 40 + (loop.index0 * (740 / 24)) }},{{ 200 - (metrics.training_curves.train_accuracy[loop.index0] - 60) * 4.4 }}
+            {% endfor %}
+          "
+        />
+
+        <!-- Validation Accuracy Line (Cyan) -->
+        <polyline
+          fill="none"
+          stroke="var(--accent-cyan)"
+          stroke-width="3"
+          stroke-dasharray="2"
+          points="
+            {% for ep in metrics.training_curves.epochs %}
+              {{ 40 + (loop.index0 * (740 / 24)) }},{{ 200 - (metrics.training_curves.val_accuracy[loop.index0] - 60) * 4.4 }}
+            {% endfor %}
+          "
+        />
+
+        <!-- Loss Curve (Rose) -->
+        <polyline
+          fill="none"
+          stroke="var(--accent-rose)"
+          stroke-width="2"
+          points="
+            {% for ep in metrics.training_curves.epochs %}
+              {{ 40 + (loop.index0 * (740 / 24)) }},{{ 200 - (metrics.training_curves.val_loss[loop.index0] * 70) }}
+            {% endfor %}
+          "
+        />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Multi-Class Confusion Matrix Heatmap -->
+  <div class="glass-panel" style="padding: 2rem; margin-bottom: 2.5rem;">
+    <div style="margin-bottom: 1.2rem;">
+      <h3 style="font-size: 1.3rem;">16-Class Confusion Matrix</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem;">
+        Diagonal values represent correct true-positive classifications on the unseen test dataset.
+      </p>
+    </div>
+
+    <div class="matrix-scroll-wrapper">
+      <table class="confusion-matrix-table">
+        <thead>
+          <tr>
+            <th style="background: rgba(0,0,0,0.5); font-weight: 700;">True \ Pred</th>
+            {% for name in metrics.class_names %}
+            <th style="max-width: 45px; writing-mode: vertical-rl; transform: rotate(180deg); padding: 8px 4px; font-size: 0.68rem;">
+              {{ name }}
+            </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in metrics.confusion_matrix %}
+          {% set row_idx = loop.index0 %}
+          <tr>
+            <th style="text-align: left; white-space: nowrap; font-size: 0.72rem; padding: 4px 8px;">
+              {{ metrics.class_names[row_idx] }}
+            </th>
+            {% for val in row %}
+            {% set col_idx = loop.index0 %}
+            {% if row_idx == col_idx %}
+              <td class="matrix-cell-diag" title="True Positives: {{ val }}">{{ val }}</td>
+            {% elif val > 0 %}
+              <td class="matrix-cell-error" title="Misclassified: {{ val }}">{{ val }}</td>
+            {% else %}
+              <td class="matrix-cell-zero">0</td>
+            {% endif %}
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Detailed Classification Report Table -->
+  <div class="glass-panel" style="padding: 2rem; margin-bottom: 2.5rem;">
+    <h3 style="font-size: 1.3rem; margin-bottom: 1.2rem;">Detailed Classification Report</h3>
+    
+    <div style="overflow-x: auto;">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Disease / Healthy Class</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1-Score</th>
+            <th>Support (Images)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in metrics.per_class_metrics %}
+          <tr>
+            <td style="font-weight: 600; color: #fff;">{{ c.class_name }}</td>
+            <td style="font-family: var(--font-mono); color: var(--emerald-400);">{{ c.precision }}%</td>
+            <td style="font-family: var(--font-mono); color: var(--accent-cyan);">{{ c.recall }}%</td>
+            <td style="font-family: var(--font-mono); color: #fff;">{{ c.f1_score }}%</td>
+            <td style="font-family: var(--font-mono); color: var(--text-muted);">{{ c.support }}</td>
+          </tr>
+          {% endfor %}
+          <tr style="background: rgba(16,185,129,0.08); font-weight: 700;">
+            <td style="color: #fff;">Macro Average</td>
+            <td style="font-family: var(--font-mono); color: var(--emerald-400);">{{ metrics.macro_precision }}%</td>
+            <td style="font-family: var(--font-mono); color: var(--accent-cyan);">{{ metrics.macro_recall }}%</td>
+            <td style="font-family: var(--font-mono); color: #fff;">{{ metrics.macro_f1 }}%</td>
+            <td style="font-family: var(--font-mono); color: var(--text-muted);">{{ metrics.total_test_samples }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CNN Architecture Breakdown Table -->
+  <div class="glass-panel" style="padding: 2rem; margin-bottom: 2.5rem;">
+    <h3 style="font-size: 1.3rem; margin-bottom: 1.2rem;">Convolutional Neural Network Layer Architecture</h3>
+    
+    <div style="overflow-x: auto;">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Layer Name</th>
+            <th>Layer Type</th>
+            <th>Output Dimension</th>
+            <th>Param Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for layer in metrics.cnn_architecture %}
+          <tr>
+            <td style="font-family: var(--font-mono); color: var(--emerald-400);">{{ layer.layer }}</td>
+            <td>{{ layer.type }}</td>
+            <td style="font-family: var(--font-mono); color: var(--text-muted);">{{ layer.dimension }}</td>
+            <td style="font-family: var(--font-mono); color: #fff;">{{ layer.params }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

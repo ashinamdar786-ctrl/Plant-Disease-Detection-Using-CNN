@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Scan History & Logs - AgriScan AI{% endblock %}
+
+{% block content %}
+<div class="section-wrapper" style="padding-top: 2rem;">
+  
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div class="section-tag">Database Persistence</div>
+      <h1 style="font-size: 2.2rem;">Prediction Logs & Diagnosis History</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Complete historical log of all plant-leaf classification scans performed by the CNN model.
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 0.8rem; align-items: center;">
+      <a href="{{ url_for('export_csv') }}" class="btn-secondary" id="export-csv-btn">
+        <span>📥</span> Export CSV Log
+      </a>
+      {% if records %}
+      <button onclick="clearHistoryRecords()" class="btn-secondary" style="border-color: rgba(244, 63, 94, 0.4); color: #fca5a5;">
+        <span>🗑️</span> Clear All
+      </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Stats Ribbon -->
+  <div class="metrics-overview-grid" style="margin-bottom: 1.8rem;">
+    <div class="glass-panel metric-kpi-card">
+      <div class="metric-kpi-val">{{ stats.total_scans }}</div>
+      <div class="metric-kpi-label">Total Leaves Scanned</div>
+    </div>
+    <div class="glass-panel metric-kpi-card">
+      <div class="metric-kpi-val" style="color: var(--emerald-400);">{{ stats.healthy_count }}</div>
+      <div class="metric-kpi-label">Healthy Plants</div>
+    </div>
+    <div class="glass-panel metric-kpi-card">
+      <div class="metric-kpi-val" style="color: var(--accent-amber);">{{ stats.diseased_count }}</div>
+      <div class="metric-kpi-label">Pathogenic Cases</div>
+    </div>
+    <div class="glass-panel metric-kpi-card">
+      <div class="metric-kpi-val">{{ stats.avg_confidence }}%</div>
+      <div class="metric-kpi-label">Average Confidence</div>
+    </div>
+  </div>
+
+  <!-- Filter & Search Bar -->
+  <div class="glass-panel" style="padding: 1.2rem; margin-bottom: 1.8rem;">
+    <form method="GET" action="{{ url_for('history') }}" class="filter-bar" style="margin-bottom: 0;">
+      <div style="flex: 1; min-width: 220px;">
+        <input type="text" name="search" value="{{ search }}" placeholder="Search condition, crop, or plot note..." class="filter-input" style="width: 100%;">
+      </div>
+
+      <select name="crop" class="filter-select" onchange="this.form.submit()">
+        <option value="all" {% if crop_filter == 'all' %}selected{% endif %}>All Crops</option>
+        <option value="Tomato" {% if crop_filter == 'Tomato' %}selected{% endif %}>Tomato</option>
+        <option value="Potato" {% if crop_filter == 'Potato' %}selected{% endif %}>Potato</option>
+        <option value="Bell Pepper" {% if crop_filter == 'Bell Pepper' %}selected{% endif %}>Bell Pepper</option>
+        <option value="Apple" {% if crop_filter == 'Apple' %}selected{% endif %}>Apple</option>
+        <option value="Corn (Maize)" {% if crop_filter == 'Corn (Maize)' %}selected{% endif %}>Corn (Maize)</option>
+        <option value="Grape" {% if crop_filter == 'Grape' %}selected{% endif %}>Grape</option>
+      </select>
+
+      <select name="severity" class="filter-select" onchange="this.form.submit()">
+        <option value="all" {% if severity_filter == 'all' %}selected{% endif %}>All Severities</option>
+        <option value="None" {% if severity_filter == 'None' %}selected{% endif %}>Healthy (None)</option>
+        <option value="Moderate" {% if severity_filter == 'Moderate' %}selected{% endif %}>Moderate</option>
+        <option value="Critical" {% if severity_filter == 'Critical' %}selected{% endif %}>Critical</option>
+      </select>
+
+      <button type="submit" class="btn-cta" style="padding: 0.55rem 1.2rem; font-size: 0.88rem;">
+        Filter
+      </button>
+
+      {% if search or crop_filter != 'all' or severity_filter != 'all' %}
+      <a href="{{ url_for('history') }}" class="btn-secondary" style="padding: 0.55rem 1rem; font-size: 0.88rem;">
+        Reset
+      </a>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- Records Table -->
+  <div class="glass-panel" style="overflow-x: auto; padding: 0.5rem;">
+    {% if records %}
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>#ID</th>
+          <th>Preview</th>
+          <th>Timestamp</th>
+          <th>Crop & Disease</th>
+          <th>Status / Severity</th>
+          <th>Confidence</th>
+          <th>Field Notes</th>
+          <th style="text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr id="row-{{ r.id }}">
+          <td style="font-family: var(--font-mono); color: var(--text-dim);">#{{ r.id }}</td>
+          <td>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <img src="{{ r.image_path }}" alt="Leaf" style="width: 44px; height: 44px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border-glass);" title="Original Leaf">
+              {% if r.heatmap_path %}
+              <img src="{{ r.heatmap_path }}" alt="Heatmap" style="width: 44px; height: 44px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border-glass);" title="Grad-CAM Saliency">
+              {% endif %}
+            </div>
+          </td>
+          <td style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-muted);">{{ r.timestamp }}</td>
+          <td>
+            <div style="font-weight: 700; color: #fff;">{{ r.crop }}</div>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">{{ r.disease }}</div>
+          </td>
+          <td>
+            {% if r.is_healthy %}
+            <span class="status-badge status-healthy" style="font-size: 0.75rem; padding: 2px 8px;">Healthy</span>
+            {% elif r.severity == 'Critical' %}
+            <span class="status-badge status-critical" style="font-size: 0.75rem; padding: 2px 8px;">Critical</span>
+            {% else %}
+            <span class="status-badge status-moderate" style="font-size: 0.75rem; padding: 2px 8px;">Moderate</span>
+            {% endif %}
+          </td>
+          <td style="font-family: var(--font-mono); font-weight: 700; color: var(--emerald-400);">{{ r.confidence }}%</td>
+          <td style="font-size: 0.85rem; color: var(--text-muted); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            {{ r.notes or '—' }}
+          </td>
+          <td style="text-align: right;">
+            <div style="display: flex; gap: 6px; justify-content: flex-end;">
+              <a href="{{ url_for('view_report', pred_id=r.id) }}" target="_blank" class="btn-secondary" style="padding: 4px 10px; font-size: 0.78rem;">
+                Prescription
+              </a>
+              <button onclick="deleteHistoryItem({{ r.id }})" class="btn-secondary" style="padding: 4px 8px; font-size: 0.78rem; border-color: rgba(244,63,94,0.3); color: #fca5a5;" title="Delete Record">
+                ✕
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div style="text-align: center; padding: 3.5rem 1rem;">
+      <div style="font-size: 3rem; margin-bottom: 0.8rem;">📋</div>
+      <h3 style="font-size: 1.3rem; margin-bottom: 0.4rem;">No Diagnostic Records Found</h3>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+        No scans match your current filter or database is currently empty.
+      </p>
+      <a href="{{ url_for('diagnose') }}" class="btn-cta">
+        <span>⚡</span> Perform Your First Scan
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function deleteHistoryItem(id) {
+  if (confirm(`Are you sure you want to delete scan record #${id}?`)) {
+    fetch(`/api/history/delete/${id}`, { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const row = document.getElementById(`row-${id}`);
+          if (row) row.remove();
+          showToast(`Record #${id} deleted`, 'info');
+        } else {
+          showToast('Failed to delete record', 'error');
+        }
+      });
+  }
+}
+
+function clearHistoryRecords() {
+  if (confirm('Are you sure you want to permanently delete all scan records?')) {
+    fetch('/api/history/clear', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.reload();
+        }
+      });
+  }
+}
+</script>
+{% endblock %}

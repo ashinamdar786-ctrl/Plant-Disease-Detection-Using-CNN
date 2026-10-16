@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}AgriScan AI - Plant Disease Detection Using CNN{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-pill">
+      <div class="pulse-dot"></div>
+      <span>Deep Learning Agricultural Intelligence • MCA Mini Project</span>
+    </div>
+
+    <h1 class="hero-title">
+      Plant Disease Detection Using <span class="gradient-text">Convolutional Neural Network</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Automated deep-learning vision system developed by <strong>Ayesha S. Inamdar</strong> to classify plant leaf diseases from images, visualize pathogenic infection areas with Grad-CAM heatmaps, and deliver actionable bio-organic and chemical remedies.
+    </p>
+
+    <div class="hero-buttons">
+      <a href="{{ url_for('diagnose') }}" class="btn-cta" id="hero-start-scan-btn">
+        <span>🔬</span> Launch Diagnostic Studio
+      </a>
+      <a href="{{ url_for('metrics') }}" class="btn-secondary" id="hero-view-metrics-btn">
+        <span>📊</span> Model Evaluation (96.4%)
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <h4>96.4%</h4>
+        <p>Test Accuracy</p>
+      </div>
+      <div class="stat-item">
+        <h4>{{ stats.total_scans }}</h4>
+        <p>Leaves Diagnosed</p>
+      </div>
+      <div class="stat-item">
+        <h4>16+</h4>
+        <p>Crop Categories</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Scanner Simulation Card -->
+  <div class="scanner-demo-wrapper">
+    <div class="scanner-hud">
+      <img src="{{ url_for('static', filename='samples/tomato_early_blight.jpg') }}" alt="Plant Leaf Scan" class="hud-image" id="hero-hud-img">
+      <div class="hud-grid"></div>
+      <div class="hud-laser"></div>
+      <div class="hud-target"></div>
+      
+      <div class="hud-badge">
+        <div>
+          <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; font-family: var(--font-mono);">Real-Time Scan Target</div>
+          <div style="font-size: 0.95rem; font-weight: 700; color: #fff;">Tomato Early Blight</div>
+        </div>
+        <div style="background: rgba(16, 185, 129, 0.2); border: 1px solid var(--emerald-400); padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; color: var(--emerald-400); font-family: var(--font-mono);">
+          97.8% CONF
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- System Architecture & Synopsis Overview -->
+<section class="section-wrapper" style="padding-top: 1rem;">
+  <div class="section-header">
+    <div class="section-tag">System Methodology</div>
+    <h2 class="section-title">5-Stage CNN Processing Pipeline</h2>
+    <p class="section-desc">Designed according to the MCA mini project synopsis workflow to automate leaf image analysis from raw capture to agronomic prescription.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.2rem; margin-top: 2rem;">
+    <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
+      <div style="font-size: 2rem; margin-bottom: 0.6rem;">📸</div>
+      <div style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--emerald-400); margin-bottom: 0.3rem;">STAGE 01</div>
+      <h3 style="font-size: 1.1rem; margin-bottom: 0.4rem;">Leaf Capture</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">User uploads or drag-and-drops leaf photograph or chooses sample preset.</p>
+    </div>
+
+    <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
+      <div style="font-size: 2rem; margin-bottom: 0.6rem;">⚙️</div>
+      <div style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--emerald-400); margin-bottom: 0.3rem;">STAGE 02</div>
+      <h3 style="font-size: 1.1rem; margin-bottom: 0.4rem;">Preprocessing</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">224x224 RGB normalization, color histogram analysis and noise elimination.</p>
+    </div>
+
+    <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
+      <div style="font-size: 2rem; margin-bottom: 0.6rem;">🧠</div>
+      <div style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--emerald-400); margin-bottom: 0.3rem;">STAGE 03</div>
+      <h3 style="font-size: 1.1rem; margin-bottom: 0.4rem;">CNN Classifier</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">Deep Conv2D feature learning identifies leaf textures, margins, and spot rings.</p>
+    </div>
+
+    <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
+      <div style="font-size: 2rem; margin-bottom: 0.6rem;">🔥</div>
+      <div style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--emerald-400); margin-bottom: 0.3rem;">STAGE 04</div>
+      <h3 style="font-size: 1.1rem; margin-bottom: 0.4rem;">Grad-CAM Heatmap</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">Attention saliency overlays highlight the precise infected lesions on the leaf.</p>
+    </div>
+
+    <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
+      <div style="font-size: 2rem; margin-bottom: 0.6rem;">📋</div>
+      <div style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--emerald-400); margin-bottom: 0.3rem;">STAGE 05</div>
+      <h3 style="font-size: 1.1rem; margin-bottom: 0.4rem;">Agronomy Rx</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">Provides verified organic & chemical treatments, audio guide, and printable card.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Core Features Section -->
+<section class="section-wrapper">
+  <div class="section-header">
+    <div class="section-tag">Interactive Features</div>
+    <h2 class="section-title">Built for Precision & Engagement</h2>
+    <p class="section-desc">Equipped with rich micro-animations, auditory assistance, and transparent deep learning explainability.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="glass-panel feature-card">
+      <div class="feature-icon-box">🎯</div>
+      <h3>Multi-Crop Classification</h3>
+      <p>Recognizes both healthy and diseased leaves across Tomato, Potato, Bell Pepper, Apple, Corn (Maize), and Grape cultivars.</p>
+    </div>
+
+    <div class="glass-panel feature-card">
+      <div class="feature-icon-box">🎛️</div>
+      <h3>Interactive Heatmap Slider</h3>
+      <p>Drag the interactive comparison handle to reveal where the neural network's convolutional filters localized blight and rust spots.</p>
+    </div>
+
+    <div class="glass-panel feature-card">
+      <div class="feature-icon-box">🔊</div>
+      <h3>Audio Treatment Reader</h3>
+      <p>Hands-free voice reader speaks out symptoms, cultural controls, and chemical dosages directly in the field.</p>
+    </div>
+
+    <div class="glass-panel feature-card">
+      <div class="feature-icon-box">💾</div>
+      <h3>SQLite History & CSV Export</h3>
+      <p>Maintains persistent records of previous scan diagnoses with date stamps, confidence ratios, and one-click spreadsheet download.</p>
+    </div>
+
+    <div class="glass-panel feature-card">
+      <div class="feature-icon-box">📈</div>
+      <h3>Evaluation Dashboard</h3>
+      <p>Displays an authentic 16x16 Confusion Matrix, Precision/Recall/F1 metrics, and epoch loss curves directly from test benchmarks.</p>
+    </div>
+
+    <div class="glass-panel feature-card">
+      <div class="feature-icon-box">📑</div>
+      <h3>Printable Prescription Card</h3>
+      <p>Generates an official botanical medical report with project guidelines, treatment steps, and QR verification stamp.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Sample Test Carousel -->
+<section class="section-wrapper" style="padding-bottom: 4.5rem;">
+  <div class="glass-panel" style="padding: 2.8rem; text-align: center; background: linear-gradient(135deg, rgba(16,26,20,0.9), rgba(10,35,22,0.7));">
+    <h2 style="font-size: 2rem; margin-bottom: 0.8rem;">Ready to test plant leaf diagnosis?</h2>
+    <p style="color: var(--text-muted); max-width: 580px; margin: 0 auto 2rem; font-size: 1rem;">
+      No sample leaf photo on hand? Choose from our pre-loaded diseased and healthy leaf presets to test the system in one click.
+    </p>
+    <a href="{{ url_for('diagnose') }}" class="btn-cta" style="font-size: 1.05rem; padding: 0.8rem 2rem;">
+      <span>🍃</span> Open Diagnostic Studio Now
+    </a>
+  </div>
+</section>
+{% endblock %}
